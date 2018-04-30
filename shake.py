@@ -9,12 +9,17 @@ gROOT.Reset()
 c1 = TCanvas('c1', 'test', 200, 10,700, 500)
 
 Vd = .0538
-r1 = 100000.
-r2 = 1000.
-ra = 200000.
-i#ra = 100000.
-rf = 22000.
+#r1 = 100000.
+#r2 = 1000.
+#ra = 200000.
+##ra = 100000.
+#rf = 22000.
 v_in = 5.45
+r1= 97800.
+r2 = 969.
+ra = 196000.
+rf = 22500.
+
 
 times = []
 volts1 =[]
@@ -26,7 +31,7 @@ if purged:
 		try:
 			with warnings.catch_warnings():
 				warnings.simplefilter("ignore")
-				volt = loadtxt(curfile, unpack=True, skiprows=0)
+				times, volt = loadtxt(curfile, unpack=True, skiprows=0)
 			#	times.extend(time)
 				volts1.extend(volt)
 				print curfile
@@ -50,23 +55,24 @@ else:
 volts = [v for v in volts1 if (v<-0.2 and v > -9)]
 
 Gfactor =(1./(rf+ra))*((r1+r2)/(v_in*r2))
-RealGshit = [(v*Gfactor) for v in volts if v< -0.2]
+#RealGshit = [(v*Gfactor) for v in volts if v< -0.2]
 G_0 = 7.748092*10**(-5)
 low_volt = -9#-13.
 high_volt = 0#0.0
 
-bins = 200
+bins = 100
 hist = TH1F("h1","V",bins,low_volt,high_volt)
 ghist = TH1F("conductance","G",bins,low_volt*Gfactor,high_volt*Gfactor)
 g0hist = TH1F("ratio","G/G0",bins,-10,0)
 for v in volts:
 	hist.Fill(v)
-
+	ghist.Fill(v*Gfactor)
+	g0hist.Fill(v*Gfactor/G_0)
 hist.Draw("E")
 c1.SaveAs("volts.pdf")
-for g in RealGshit:
-	ghist.Fill(g)
-	g0hist.Fill(g/G_0)
+#for g in RealGshit:
+#	ghist.Fill(g)
+#	g0hist.Fill(g/G_0)
 
 ghist.Draw()
 c1.SaveAs("conductance.pdf")
@@ -77,7 +83,7 @@ goodbins = []
 for i in range(hist.GetSize()):
 	content = hist.GetBinContent(i)
 	if( content > 80000.0):
-		print i, (low_volt+i*((high_volt-low_volt)/bins)),hist.GetBinContent(i)
+		#print i, (low_volt+i*((high_volt-low_volt)/bins)),hist.GetBinContent(i)
 		goodbins.append(low_volt+i*((high_volt-low_volt)/bins))
 
 distances = []

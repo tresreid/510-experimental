@@ -36,12 +36,12 @@ for directory in os.listdir("data/used"):
 				if v<-0.2 and v> -9:
 					times.append(t)
 					volts1.append(v)
-					line = "%s \n"%(v)
+					line = "%s %s \n"%(t,v)
 					f.write(line)
 					nonempty = True
 			
 			if nonempty:
-				f.write("0 \n")
+				f.write("0 0 \n")
 				f.close()
 				fullname = "data_purged/full/purged_%s"%(filename)
 				copyfile(new_purgename,fullname)
@@ -49,18 +49,3 @@ for directory in os.listdir("data/used"):
 				f.close()
 			print "complete purge of file %s" %(filename)
 					
-#v2 = []
-#for v in volts:
-#	if v > -2.:
-#		v2.append(-v)
-##volts = v2
-#volts = [v for v in volts1 if (v<-0.2 and v > -9)]
-#f = open('purged.txt','w')
-#for v in volts:
-#	f.write(v)
-#	f.write('\n')
-#
-#f.close()
-
-
-
